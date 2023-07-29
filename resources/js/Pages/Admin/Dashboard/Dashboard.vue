@@ -1,7 +1,7 @@
 <script setup>
 import { Link } from "@inertiajs/vue3";
-import LayoutDashboard from "../../Shared/Layout/LayoutDashboard.vue";
-import DashboardHeader from "../../Shared/Dashboard/DashboardHeader.vue";
+import LayoutDashboardAdmin from "../../../Shared/Layout/LayoutDashboardAdmin.vue";
+import DashboardHeader from "../../../Shared/Dashboard/DashboardHeader.vue";
 
 defineProps({
     role: String,
@@ -13,7 +13,7 @@ defineProps({
 
 // CommonJS
 export default {
-    layout: LayoutDashboard,
+    layout: LayoutDashboardAdmin,
 };
 </script>
 

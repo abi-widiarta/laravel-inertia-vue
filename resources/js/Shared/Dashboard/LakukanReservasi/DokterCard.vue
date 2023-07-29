@@ -1,6 +1,6 @@
 <template>
     <div
-        class="flex space-x-4 bg-white pl-6 pr-10 py-6 space-y-4 rounded-xl shadow-lg shadow-gray-100"
+        class="flex space-x-4 bg-white pl-6 pr-10 py-6 rounded-xl shadow-lg shadow-gray-100"
     >
         <div class="text-center space-y-4">
             <img

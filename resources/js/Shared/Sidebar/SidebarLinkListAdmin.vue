@@ -34,40 +34,50 @@ function showAlert() {
                 <SidebarLink
                     title="Dashboard"
                     imgurl="img/dashboard-icon.png"
-                    :active="$page.component == 'Dashboard/Dashboard'"
-                    to="/dashboard"
+                    :active="$page.component == 'Admin/Dashboard/Dashboard'"
+                    to="/admin-dashboard"
                 />
             </li>
             <li>
                 <SidebarLink
-                    title="Lakukan Reservasi"
-                    imgurl="img/lakukan-reservasi-icon.png"
-                    :active="$page.component == 'Dashboard/LakukanReservasi'"
-                    to="/lakukan-reservasi"
+                    title="Data Pasien"
+                    imgurl="img/data-pasien-icon.png"
+                    :active="$page.component == 'Admin/Dashboard/DataPasien'"
+                    to="/admin-data-pasien"
                 />
             </li>
             <li>
                 <SidebarLink
-                    title="Reservasi Saya"
+                    title="Data Dokter"
+                    imgurl="img/data-dokter-icon.png"
+                    :active="$page.component == 'Admin/Dashboard/DataDokter'"
+                    to="/admin-data-dokter"
+                />
+            </li>
+            <li>
+                <SidebarLink
+                    title="Jadwal Dokter"
                     imgurl="img/reservasi-saya-icon.png"
-                    :active="$page.component == 'Dashboard/ReservasiSaya'"
-                    to="/reservasi-saya"
+                    :active="$page.component == 'Admin/Dashboard/JadwalDokter'"
+                    to="/admin-jadwal-dokter"
                 />
             </li>
             <li>
                 <SidebarLink
-                    title="Antrian"
+                    title="Antrian Pemeriksaan"
                     imgurl="img/antrian-sidebar-icon.png"
-                    :active="$page.component == 'Dashboard/Antrian'"
-                    to="/antrian"
+                    :active="
+                        $page.component == 'Admin/Dashboard/AntrianPemeriksaan'
+                    "
+                    to="/admin-antrian-pemeriksaan"
                 />
             </li>
             <li>
                 <SidebarLink
-                    title="Riwayat Pemeriksaan"
-                    imgurl="img/riwayat-pemeriksaan-icon.png"
-                    :active="$page.component == 'Dashboard/RiwayatPemeriksaan'"
-                    to="/riwayat-pemeriksaan"
+                    title="Pembayaran"
+                    imgurl="img/pembayaran-icon.png"
+                    :active="$page.component == 'Admin/Dashboard/Pembayaran'"
+                    to="/admin-pembayaran"
                 />
             </li>
         </ul>

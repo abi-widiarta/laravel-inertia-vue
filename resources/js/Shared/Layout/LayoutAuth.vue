@@ -33,7 +33,11 @@ export default {
 <template>
     <NavLandingPage v-if="$page.component == 'Landingpage'" />
     <NavAuth
-        v-if="$page.component == 'Login' || $page.component == 'Register'"
+        v-if="
+            $page.component == 'Login' ||
+            $page.component == 'Register' ||
+            $page.component == 'LoginAdmin'
+        "
     />
     <section>
         <transition name="page">

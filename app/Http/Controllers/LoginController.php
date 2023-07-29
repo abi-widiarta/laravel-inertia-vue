@@ -26,7 +26,30 @@ class LoginController extends Controller
             
             $request->session()->regenerate();  
 
-            return redirect()->intended('dashboard');
+            return redirect('dashboard');
+        }
+
+        // Alert::alert('Login Failed', 'Please Enter The Correct Data', 'error');
+
+        return back()->withErrors([
+            'username' => 'The provided credentials do not match our records.',
+        ])->onlyInput('username');
+    }
+
+    public function authenticateAdmin(Request $request)
+    {
+        $credentials = $request->validate([
+            'username' => ['required','max:20'],
+            'password' => ['required'],
+        ]);
+
+        
+        
+        if (Auth::guard('admin')->attempt($credentials)) {
+            
+            $request->session()->regenerate();  
+
+            return redirect('admin-dashboard');
         }
 
         // Alert::alert('Login Failed', 'Please Enter The Correct Data', 'error');
@@ -46,4 +69,5 @@ class LoginController extends Controller
 
         return redirect('/login');
     }
+
 }
