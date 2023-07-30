@@ -13,28 +13,28 @@ class LoginController extends Controller
         return Inertia::render('Login');
     }
 
-    public function authenticate(Request $request)
-    {
-        $credentials = $request->validate([
-            'username' => ['required','max:20'],
-            'password' => ['required'],
-        ]);
+    // public function authenticate(Request $request)
+    // {
+    //     $credentials = $request->validate([
+    //         'username' => ['required','max:20'],
+    //         'password' => ['required'],
+    //     ]);
 
         
         
-        if (Auth::attempt($credentials)) {
+    //     if (Auth::attempt($credentials)) {
             
-            $request->session()->regenerate();  
+    //         $request->session()->regenerate();  
 
-            return redirect('dashboard');
-        }
+    //         return redirect('dashboard');
+    //     }
 
-        // Alert::alert('Login Failed', 'Please Enter The Correct Data', 'error');
+    //     // Alert::alert('Login Failed', 'Please Enter The Correct Data', 'error');
 
-        return back()->withErrors([
-            'username' => 'The provided credentials do not match our records.',
-        ])->onlyInput('username');
-    }
+    //     return back()->withErrors([
+    //         'username' => 'The provided credentials do not match our records.',
+    //     ])->onlyInput('username');
+    // }
 
     public function authenticateAdmin(Request $request)
     {
@@ -48,7 +48,7 @@ class LoginController extends Controller
         if (Auth::guard('admin')->attempt($credentials)) {
             
             $request->session()->regenerate();  
-
+            
             return redirect('admin-dashboard');
         }
 

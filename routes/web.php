@@ -4,9 +4,14 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Socialite\Facades\Socialite;
 
 Route::middleware('auth:web')->group(function() {
     Route::get('/dashboard', function() {
+      
+        
         return Inertia::render('Dashboard/Dashboard',["role" => "user"]);
     });
 
@@ -45,9 +50,9 @@ Route::middleware('guest')->group(function() {
 
     Route::post('/admin/login', [LoginController::class, 'authenticateAdmin']);
     
-    Route::get('/register', [RegisterController::class, 'index']);
+    Route::get('/register-admin', [RegisterController::class, 'index']);
     
-    Route::post('/register', [RegisterController::class, 'store']);
+    Route::post('/register-admin', [RegisterController::class, 'storeAdmin']);
 });
 
 Route::middleware('auth:admin')->group(function() {
@@ -56,7 +61,7 @@ Route::middleware('auth:admin')->group(function() {
     });
     
     Route::get('/admin-data-pasien', function() {
-        return Inertia::render('Admin/Dashboard/DataPasien',["role" => "admin"]);
+        return Inertia::render('Admin/Dashboard/DataPasien',["role" => "admin","users" => User::all()]);
     });
 
     Route::get('/admin-data-dokter', function() {
@@ -76,3 +81,30 @@ Route::middleware('auth:admin')->group(function() {
     });
 });
 
+Route::get('/auth/redirect', function () {
+    return Socialite::driver('google')->redirect();
+});
+
+Route::get('/auth/google/callback', function () {
+    $googleUser = Socialite::driver('google')->user();
+
+    // dd($googleUser);
+
+    // if(!str_ends_with($googleUser->email, '@outlook.com')) {
+    //     return redirect('/login')->with('error',"Login Failed! Please use SSO");
+    // }
+    
+    $user = User::updateOrCreate([
+        'google_id' => $googleUser->id,
+    ], [
+        'name' => $googleUser->name,
+        'username' => null,
+        'email' => $googleUser->email,
+        'password' => null,
+        'google_token' => $googleUser->token,
+        'google_refresh_token' => $googleUser->refreshToken,
+    ]);
+    Auth::login($user);
+
+    return redirect('/dashboard')->with('message', $googleUser->avatar);
+});

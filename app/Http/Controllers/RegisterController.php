@@ -2,19 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Admin;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class RegisterController extends Controller
 {
-    public function index() {
+public function index() {
         return Inertia::render('Register');
     }
 
-    public function store(Request $request) {
+    public function storeAdmin(Request $request) {
         $validatedData = $request->validate([
-            'nim' => 'required|numeric|digits:10|unique:users',
             'name' => 'required|max:100',
             'username' => 'required|unique:users|max:20',
             'email' => 'required|unique:users|email:rfc,dns',
@@ -22,9 +21,10 @@ class RegisterController extends Controller
         ]);
 
         $validatedData['password'] = bcrypt($request->password);
+        $validatedData['admin_id'] = 123;
 
-        User::create($validatedData);
+        Admin::create($validatedData);
 
-        return redirect('/login');
+        return redirect('/admin/login');
     }
 }

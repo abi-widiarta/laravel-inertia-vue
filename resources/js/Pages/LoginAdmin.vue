@@ -103,6 +103,7 @@ export default {
                     >
                         Login
                     </button>
+                    <Link href="/register-admin">Register Here</Link>
                 </form>
             </div>
         </div>

@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
+use Laravel\Socialite\Facades\Socialite;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -38,8 +39,13 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         return array_merge(parent::share($request),
+        
             [
-            "username" => Auth::user() ? Auth::user()->name : null  
+            'flash' => [
+                'message' => fn () => $request->session()->get('message')
+            ],
+            "username" => Auth::user() ? Auth::user()->name : null  ,
+            // "avatar" => Auth::user() ? Socialite::driver('google')->user() : null
             ]
         );
     }

@@ -1,11 +1,17 @@
 <script setup>
 import { reactive, ref } from "vue";
+import { usePage } from "@inertiajs/vue3";
+
+const page = usePage();
+
 const props = defineProps({
     title: String,
     name: String,
     role: String,
 });
 
+let profileImg = page.props.flash.message;
+// console.log(page.props.flash.message);
 let profileName = ref(props.name[0]);
 </script>
 
@@ -26,7 +32,15 @@ let profileName = ref(props.name[0]);
                 <div
                     class="grid place-items-center w-8 aspect-square bg-gray-600 rounded-full"
                 >
-                    <p class="m-0 font-base text-white">{{ profileName }}</p>
+                    <img
+                        v-if="profileImg"
+                        class="rounded-full"
+                        :src="profileImg"
+                        alt="profile"
+                    />
+                    <p v-if="!profileImg" class="m-0 font-base text-white">
+                        {{ profileName }}
+                    </p>
                 </div>
             </div>
         </div>

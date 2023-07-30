@@ -9,7 +9,7 @@ import SidebarAdmin from "../Sidebar/SidebarAdmin.vue";
             <SidebarAdmin />
         </div>
 
-        <section class="flex-1 py-6 px-8">
+        <section class="flex-1 py-10 px-12">
             <slot />
         </section>
     </main>

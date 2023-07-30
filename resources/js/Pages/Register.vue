@@ -3,7 +3,6 @@ import LayoutAuth from "../Shared/Layout/LayoutAuth.vue";
 import { Link, useForm } from "@inertiajs/vue3";
 
 let form = useForm({
-    nim: "",
     name: "",
     username: "",
     email: "",
@@ -11,7 +10,7 @@ let form = useForm({
 });
 
 let submit = () => {
-    form.post("/register");
+    form.post("/register-admin");
 };
 </script>
 
@@ -38,20 +37,6 @@ export default {
                         Register
                     </h1>
                     <div class="mb-6">
-                        <label
-                            for="nim"
-                            class="block mb-2 text-sm font-medium text-gray-900"
-                            >NIM</label
-                        >
-                        <input
-                            type="text"
-                            id="nim"
-                            name="nim"
-                            v-model="form.nim"
-                            class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:outline-primary/50"
-                            required
-                        />
-
                         <!-- <p
                             id="outlined_error_help"
                             class="mt-2 text-xs text-red-600 dark:text-red-400"
