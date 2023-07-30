@@ -43,7 +43,7 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
 
-        
+        dd($credentials);
         
         if (Auth::guard('admin')->attempt($credentials)) {
             

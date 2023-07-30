@@ -82,11 +82,34 @@ Route::middleware('auth:admin')->group(function() {
 });
 
 Route::get('/auth/redirect', function () {
+
+    
     return Socialite::driver('google')->redirect();
 });
 
 Route::get('/auth/google/callback', function () {
     $googleUser = Socialite::driver('google')->user();
+
+    // if(User::all()->where('email',$googleUser->email)) {
+    // dd(Post::where('slug', $slug)->exists())
+    $newUser = User::where('email', $googleUser->email);
+    if($newUser->exists()) {
+        $newUser = User::updateOrCreate([
+            'email' => $googleUser->email,
+        ], [
+            'google_id' => $googleUser->id,
+            'name' => $googleUser->name,
+            'username' => null,
+            'password' => null,
+            'google_token' => $googleUser->token,
+            'google_refresh_token' => $googleUser->refreshToken,
+        ]);
+
+        Auth::login($newUser);
+    
+        return redirect('/dashboard')->with('message', $googleUser->avatar);
+    }
+    
 
     // dd($googleUser);
 
