@@ -17,7 +17,7 @@ function showAlert() {
         confirmButtonText: "Yes",
     }).then((result) => {
         if (result.isConfirmed) {
-            router.visit("/logout", {
+            router.visit("/logout-admin", {
                 method: "post",
             });
         }

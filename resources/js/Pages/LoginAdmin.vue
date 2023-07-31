@@ -21,7 +21,7 @@ let form = useForm({
 });
 
 let submit = () => {
-    form.post("/admin/login");
+    form.post("/admin-login");
 };
 </script>
 

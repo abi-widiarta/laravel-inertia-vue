@@ -34,7 +34,7 @@ export default {
                     <h1
                         class="text-primary text-4xl font-semibold text-center mb-10"
                     >
-                        Profiling
+                        Register
                     </h1>
                     <div class="mb-6">
                         <!-- <p

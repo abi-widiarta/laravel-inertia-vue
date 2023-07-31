@@ -42,12 +42,11 @@ class LoginController extends Controller
             'username' => ['required','max:20'],
             'password' => ['required'],
         ]);
-
-        dd($credentials);
         
         if (Auth::guard('admin')->attempt($credentials)) {
             
             $request->session()->regenerate();  
+            
             
             return redirect('admin-dashboard');
         }
@@ -68,6 +67,17 @@ class LoginController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/login');
+    }
+
+    public function logoutAdmin(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/admin-login');
     }
 
 }

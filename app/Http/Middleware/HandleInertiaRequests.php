@@ -44,7 +44,10 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'message' => fn () => $request->session()->get('message')
             ],
-            "username" => Auth::user() ? Auth::user()->name : null  ,
+            "username" =>  Auth::user() ? Auth::user()->name : null  ,
+            "email" => Auth::user() ? Auth::user()->email : null  ,
+            "profiling" => false,
+            "adminLoggedIn" => false,
             // "avatar" => Auth::user() ? Socialite::driver('google')->user() : null
             ]
         );

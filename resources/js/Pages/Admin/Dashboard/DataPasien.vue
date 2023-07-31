@@ -1,12 +1,32 @@
 <script setup>
-import { Link } from "@inertiajs/vue3";
+import { Link, router } from "@inertiajs/vue3";
 import { ref } from "vue";
 import LayoutDashboardAdmin from "../../../Shared/Layout/LayoutDashboardAdmin.vue";
 import DashboardHeader from "../../../Shared/Dashboard/DashboardHeader.vue";
+import Swal from "sweetalert2";
 
 const props = defineProps({
     users: Object,
+    admin: String,
 });
+
+function showAlert(id) {
+    Swal.fire({
+        title: "Warning",
+        text: "Are you sure want to delete this data?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#aaaa",
+        cancelButtonColor: "#ED1C24",
+        confirmButtonText: "Yes",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            router.post("/admin/delete-pasien", {
+                id: id,
+            });
+        }
+    });
+}
 
 let search = ref("");
 </script>
@@ -20,15 +40,18 @@ export default {
 <template>
     <div class="h-full flex flex-col">
         <DashboardHeader title="Data Pasien" :name="$page.props.username" />
+        <!-- {{ session }} -->
 
+        <p>{{ props.admin }}</p>
         <div class="bg-white w-full rounded-xl flex-1 p-6">
             <h2 class="text-lg font-semibold mb-8">Kelola Data Pasien</h2>
             <div class="flex justify-between mb-6">
-                <button
+                <Link
+                    href="admin-data-pasien/create"
                     class="bg-primary text-sm px-4 py-2 font-semibold text-white rounded-full transition duration-150 hover:opacity-70"
                 >
                     Tambah Data
-                </button>
+                </Link>
                 <input
                     type="text"
                     v-model="search"
@@ -42,7 +65,7 @@ export default {
                         <th
                             class="border-2 w-1 text-sm font-semibold py-5 border-[#E9E9E9]"
                         >
-                            NIM
+                            No
                         </th>
                         <th
                             class="border-2 text-sm font-semibold border-[#E9E9E9]"
@@ -63,7 +86,6 @@ export default {
                         <th
                             class="border-2 text-sm font-semibold border-[#E9E9E9]"
                         >
-                            Tempat <br />
                             Tanggal Lahir
                         </th>
                         <th class="border-2 font-semibold border-[#E9E9E9]">
@@ -72,44 +94,57 @@ export default {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr
-                        class="text-sm"
-                        v-for="(user, index) in props.users"
-                        :key="user.id"
-                        :class="{
-                            'bg-[#F5F5F5]': (index + 1) % 2 != 0,
-                        }"
-                    >
-                        <td class="border-2 border-[#E9E9E9] py-3 px-4">
-                            {{ user.nim }}
-                        </td>
-                        <td class="border-2 border-[#E9E9E9] py-3 px-4">
-                            {{ user.name }}
-                        </td>
-                        <td class="border-2 border-[#E9E9E9] py-3 px-4">
-                            {{ user.email }}
-                        </td>
-                        <td
-                            class="border-2 border-[#E9E9E9] py-3 px-4 text-center"
+                    <template v-for="(user, index) in props.users">
+                        <tr
+                            class="text-sm"
+                            v-if="user.gender != null"
+                            :key="user.id"
+                            :class="{
+                                'bg-[#F5F5F5]': (index + 1) % 2 != 0,
+                            }"
                         >
-                            L
-                        </td>
-                        <td class="border-2 border-[#E9E9E9] py-3 px-4">
-                            Jl.asdad asdasdas
-                        </td>
-                        <td class="border-2 border-[#E9E9E9]">
-                            <div
-                                class="flex items-center justify-center space-x-2"
+                            <td class="border-2 border-[#E9E9E9] py-3 px-4">
+                                {{ index + 1 }}
+                            </td>
+                            <td class="border-2 border-[#E9E9E9] py-3 px-4">
+                                {{ user.name }}
+                            </td>
+                            <td class="border-2 border-[#E9E9E9] py-3 px-4">
+                                {{ user.email }}
+                            </td>
+                            <td
+                                class="border-2 border-[#E9E9E9] py-3 px-4 text-center"
                             >
-                                <button
-                                    class="w-8 rounded-md aspect-square bg-gray-400"
-                                ></button>
-                                <button
-                                    class="w-8 rounded-md aspect-square bg-red-500"
-                                ></button>
-                            </div>
-                        </td>
-                    </tr>
+                                {{ user.gender }}
+                            </td>
+                            <td class="border-2 border-[#E9E9E9] py-3 px-4">
+                                asd
+                            </td>
+                            <td class="border-2 border-[#E9E9E9]">
+                                <div
+                                    class="flex items-center justify-center space-x-2"
+                                >
+                                    <button
+                                        class="w-8 grid place-items-center rounded-md aspect-square bg-gray-400 hover:bg-gray-500"
+                                    >
+                                        <img
+                                            src="img/edit-icon.png"
+                                            alt="edit-icon"
+                                        />
+                                    </button>
+                                    <button
+                                        @click="showAlert(user.id)"
+                                        class="w-8 grid place-items-center rounded-md aspect-square bg-red-500 hover:bg-red-600"
+                                    >
+                                        <img
+                                            src="img/delete-icon.png"
+                                            alt="delete-icon"
+                                        />
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </template>
                 </tbody>
             </table>
             <!-- <table class="w-full border-collapse table-auto">

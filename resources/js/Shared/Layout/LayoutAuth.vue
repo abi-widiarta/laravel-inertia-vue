@@ -36,7 +36,8 @@ export default {
         v-if="
             $page.component == 'Login' ||
             $page.component == 'Register' ||
-            $page.component == 'LoginAdmin'
+            $page.component == 'LoginAdmin' ||
+            $page.component == 'LoginProfiling'
         "
     />
     <section>

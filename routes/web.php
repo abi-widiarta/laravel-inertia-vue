@@ -4,13 +4,20 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PasienController;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Http\Request;
+
 
 Route::middleware('auth:web')->group(function() {
     Route::get('/dashboard', function() {
-      
+
+        if(Auth::user()->gender == null) {
+            return redirect('/login/profiling')->with('toast_error', 'Please Complete Profile First!');
+        }
+        // return Inertia::render('LoginProfiling')->with('error', 'Please Fill the profile first!');
         
         return Inertia::render('Dashboard/Dashboard',["role" => "user"]);
     });
@@ -32,8 +39,11 @@ Route::middleware('auth:web')->group(function() {
         return Inertia::render('Dashboard/RiwayatPemeriksaan');
     });
 
-    Route::post('/logout', [LoginController::class, 'logout']);
 });
+
+Route::post('/logout', [LoginController::class, 'logout']);
+
+Route::post('/logout-admin', [LoginController::class, 'logoutAdmin']);
 
 Route::middleware('guest')->group(function() {
     Route::get('/', function () {
@@ -42,13 +52,14 @@ Route::middleware('guest')->group(function() {
     
     Route::get('/login', [LoginController::class, 'index'])->name('login');
 
-    Route::get('/admin/login', function() {
+    Route::get('/admin-login', function() {
+        // dd(Auth::user());
         return Inertia::render("LoginAdmin");
     });
     
     Route::post('/login', [LoginController::class, 'authenticate']);
 
-    Route::post('/admin/login', [LoginController::class, 'authenticateAdmin']);
+    Route::post('/admin-login', [LoginController::class, 'authenticateAdmin']);
     
     Route::get('/register-admin', [RegisterController::class, 'index']);
     
@@ -57,26 +68,32 @@ Route::middleware('guest')->group(function() {
 
 Route::middleware('auth:admin')->group(function() {
     Route::get('/admin-dashboard', function() {
+        // dd(Auth::user());
         return Inertia::render('Admin/Dashboard/Dashboard',["role" => "admin"]);
     });
     
     Route::get('/admin-data-pasien', function() {
+        // dd(Auth::user());
         return Inertia::render('Admin/Dashboard/DataPasien',["role" => "admin","users" => User::all()]);
     });
 
     Route::get('/admin-data-dokter', function() {
+        // dd(Auth::user());
         return Inertia::render('Admin/Dashboard/DataDokter',["role" => "admin"]);
     });
 
     Route::get('/admin-jadwal-dokter', function() {
+        // dd(Auth::user());
         return Inertia::render('Admin/Dashboard/JadwalDokter',["role" => "admin"]);
     });
 
     Route::get('/admin-antrian-pemeriksaan', function() {
+        // dd(Auth::user());
         return Inertia::render('Admin/Dashboard/AntrianPemeriksaan',["role" => "admin"]);
     });
 
     Route::get('/admin-pembayaran', function() {
+        dd(Auth::user());
         return Inertia::render('Admin/Dashboard/Pembayaran',["role" => "admin"]);
     });
 });
@@ -90,8 +107,6 @@ Route::get('/auth/redirect', function () {
 Route::get('/auth/google/callback', function () {
     $googleUser = Socialite::driver('google')->user();
 
-    // if(User::all()->where('email',$googleUser->email)) {
-    // dd(Post::where('slug', $slug)->exists())
     $newUser = User::where('email', $googleUser->email);
     if($newUser->exists()) {
         $newUser = User::updateOrCreate([
@@ -107,21 +122,15 @@ Route::get('/auth/google/callback', function () {
 
         Auth::login($newUser);
     
-        return redirect('/dashboard')->with('message', $googleUser->avatar);
+        return redirect('/login/profiling')->with('message', $googleUser->avatar);
     }
-    
-
-    // dd($googleUser);
-
-    // if(!str_ends_with($googleUser->email, '@outlook.com')) {
-    //     return redirect('/login')->with('error',"Login Failed! Please use SSO");
-    // }
     
     $user = User::updateOrCreate([
         'google_id' => $googleUser->id,
     ], [
         'name' => $googleUser->name,
         'username' => null,
+        'gender' => null,
         'email' => $googleUser->email,
         'password' => null,
         'google_token' => $googleUser->token,
@@ -129,5 +138,28 @@ Route::get('/auth/google/callback', function () {
     ]);
     Auth::login($user);
 
-    return redirect('/dashboard')->with('message', $googleUser->avatar);
+    return redirect('/login/profiling')->with('message', $googleUser->avatar);
 });
+
+Route::get('/login/profiling', function() {
+    if(Auth::user()->gender != null) {
+        return redirect('/dashboard');
+    } else {
+        return Inertia::render('LoginProfiling');
+    }
+});
+
+Route::post('/login/profiling', function(Request $request) {
+    User::where('email', $request->email)
+        ->update(['gender' => $request->gender]);
+    return redirect('/dashboard');
+});
+
+Route::post('/admin/delete-pasien', function(Request $request) {
+    User::where('id', $request->id)->delete();
+    // User::where('email', $request->email)
+    //     ->update(['gender' => $request->gender]);
+    return redirect('/admin-data-pasien');
+});
+
+// Route::resource('admin-data-pasien', PasienController::class);

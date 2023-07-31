@@ -21,10 +21,10 @@ public function index() {
         ]);
 
         $validatedData['password'] = bcrypt($request->password);
-        $validatedData['admin_id'] = 123;
+        $validatedData['admin_id'] = 321;
 
         Admin::create($validatedData);
 
-        return redirect('/admin/login');
+        return redirect('/admin-login');
     }
 }
