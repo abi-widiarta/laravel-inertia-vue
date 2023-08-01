@@ -42,7 +42,10 @@ function showAlert() {
                 <SidebarLink
                     title="Data Pasien"
                     imgurl="img/data-pasien-icon.png"
-                    :active="$page.component == 'Admin/Dashboard/DataPasien'"
+                    :active="
+                        $page.component == 'Admin/Dashboard/DataPasien' ||
+                        $page.component == 'Admin/Dashboard/DataPasienTambah'
+                    "
                     to="/admin-data-pasien"
                 />
             </li>

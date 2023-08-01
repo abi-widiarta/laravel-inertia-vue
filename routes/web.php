@@ -72,13 +72,20 @@ Route::middleware('auth:admin')->group(function() {
         return Inertia::render('Admin/Dashboard/Dashboard',["role" => "admin"]);
     });
     
-    Route::get('/admin-data-pasien', function() {
-        // dd(Auth::user());
-        return Inertia::render('Admin/Dashboard/DataPasien',["role" => "admin","users" => User::all()]);
-    });
+    Route::get('/admin-data-pasien',[PasienController::class, 'index']); 
+
+    Route::get('/admin-data-pasien/create',[PasienController::class, 'create']); 
+
+    Route::post('/admin-data-pasien/store',[PasienController::class, 'store']); 
+
+    Route::post('/admin/delete-pasien', [PasienController::class, 'destroy']);
+
+    Route::get('/admin-data-pasien/{id}/edit', [PasienController::class, 'edit']);
+
+    Route::post('/admin-data-pasien/{id}/update', [PasienController::class, 'update']);
+    
 
     Route::get('/admin-data-dokter', function() {
-        // dd(Auth::user());
         return Inertia::render('Admin/Dashboard/DataDokter',["role" => "admin"]);
     });
 
@@ -108,6 +115,7 @@ Route::get('/auth/google/callback', function () {
     $googleUser = Socialite::driver('google')->user();
 
     $newUser = User::where('email', $googleUser->email);
+    
     if($newUser->exists()) {
         $newUser = User::updateOrCreate([
             'email' => $googleUser->email,
@@ -131,6 +139,7 @@ Route::get('/auth/google/callback', function () {
         'name' => $googleUser->name,
         'username' => null,
         'gender' => null,
+        'birthdate' => null,
         'email' => $googleUser->email,
         'password' => null,
         'google_token' => $googleUser->token,
@@ -150,16 +159,11 @@ Route::get('/login/profiling', function() {
 });
 
 Route::post('/login/profiling', function(Request $request) {
+    // dd($request->birthdate);
     User::where('email', $request->email)
-        ->update(['gender' => $request->gender]);
+        ->update(['gender' => $request->gender, 'birthdate' => $request->birthdate]);
     return redirect('/dashboard');
 });
 
-Route::post('/admin/delete-pasien', function(Request $request) {
-    User::where('id', $request->id)->delete();
-    // User::where('email', $request->email)
-    //     ->update(['gender' => $request->gender]);
-    return redirect('/admin-data-pasien');
-});
 
 // Route::resource('admin-data-pasien', PasienController::class);

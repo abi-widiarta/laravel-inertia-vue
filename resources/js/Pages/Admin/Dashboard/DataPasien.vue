@@ -27,7 +27,9 @@ function showAlert(id) {
         }
     });
 }
-
+function getEditUrl(user) {
+    return "/admin-data-pasien/" + user.id + "/edit";
+}
 let search = ref("");
 </script>
 
@@ -118,20 +120,21 @@ export default {
                                 {{ user.gender }}
                             </td>
                             <td class="border-2 border-[#E9E9E9] py-3 px-4">
-                                asd
+                                {{ user.birthdate }}
                             </td>
                             <td class="border-2 border-[#E9E9E9]">
                                 <div
                                     class="flex items-center justify-center space-x-2"
                                 >
-                                    <button
+                                    <Link
+                                        :href="getEditUrl(user)"
                                         class="w-8 grid place-items-center rounded-md aspect-square bg-gray-400 hover:bg-gray-500"
                                     >
                                         <img
                                             src="img/edit-icon.png"
                                             alt="edit-icon"
                                         />
-                                    </button>
+                                    </Link>
                                     <button
                                         @click="showAlert(user.id)"
                                         class="w-8 grid place-items-center rounded-md aspect-square bg-red-500 hover:bg-red-600"

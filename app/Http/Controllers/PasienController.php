@@ -2,65 +2,49 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\User;
 
 class PasienController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
+    public function index() {
         return Inertia::render('Admin/Dashboard/DataPasien',["role" => "admin","users" => User::all()]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+    public function create() {
+        return Inertia::render('Admin/Dashboard/DataPasienTambah');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+    public function store(Request $request) {
+        $validatedData = $request->validate([
+            'name' => 'required|max:100',
+            'gender' => 'required',
+            'email' => 'required|unique:users|email:rfc,dns',
+            'birthdate' => 'required'
+        ]);
+
+        $validatedData['google_id'] = null;
+
+        User::create($validatedData);
+
+        return redirect('/admin-data-pasien');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
-    {
-        //
+    public function destroy(Request $request) {
+        User::where('id', $request->id)->delete();
+        return redirect('/admin-data-pasien');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
-    {
-        //
+    public function edit(Request $request, string $id) {
+        $editedUser = User::find($id);
+        return Inertia::render('Admin/Dashboard/DataPasienEdit',
+        ['id' => $id,'name' => $editedUser->name,'email' => $editedUser->email,'gender' => $editedUser->gender,'birthdate' => $editedUser->birthdate ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, User $user)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(User $user)
-    {
-        //
+    public function update(Request $request, string $id) {
+        User::find($id)
+            ->update(['name' => $request->name,'gender' => $request->gender, 'birthdate' => $request->birthdate]);
+        return redirect('/admin-data-pasien');
     }
 }
