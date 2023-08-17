@@ -5,11 +5,14 @@ use Inertia\Inertia;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PasienController;
+use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\JadwalDokterController;
+use App\Models\Doctor;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Http\Request;
-
+use PhpParser\Comment\Doc;
 
 Route::middleware('auth:web')->group(function() {
     Route::get('/dashboard', function() {
@@ -23,7 +26,8 @@ Route::middleware('auth:web')->group(function() {
     });
 
     Route::get('/lakukan-reservasi', function() {
-        return Inertia::render('Dashboard/LakukanReservasi');
+        // dd();
+        return Inertia::render('Dashboard/LakukanReservasi',['doctors' => Doctor::with('jadwal_dokter')->get()]);
     });
 
 
@@ -84,15 +88,23 @@ Route::middleware('auth:admin')->group(function() {
 
     Route::post('/admin-data-pasien/{id}/update', [PasienController::class, 'update']);
     
+    Route::get('/admin-data-dokter',[DoctorController::class, 'index']);
 
-    Route::get('/admin-data-dokter', function() {
-        return Inertia::render('Admin/Dashboard/DataDokter',["role" => "admin"]);
-    });
+    Route::get('/admin-data-dokter/create',[DoctorController::class, 'create']);
 
-    Route::get('/admin-jadwal-dokter', function() {
-        // dd(Auth::user());
-        return Inertia::render('Admin/Dashboard/JadwalDokter',["role" => "admin"]);
-    });
+    Route::post('/admin-data-dokter/store',[DoctorController::class, 'store']);
+
+    Route::get('/admin-data-dokter/{id}/edit',[DoctorController::class, 'edit']);
+
+    Route::post('/admin-data-dokter/{id}/update', [DoctorController::class, 'update']);
+
+    Route::post('/admin/delete-dokter', [DoctorController::class, 'destroy']);
+
+    Route::get('/admin-jadwal-dokter', [JadwalDokterController::class, 'index']);
+
+    Route::get('/admin-jadwal-dokter/{id}/edit', [JadwalDokterController::class, 'edit']);
+
+    Route::post('/admin-jadwal-dokter/{id}/update', [JadwalDokterController::class, 'update']);
 
     Route::get('/admin-antrian-pemeriksaan', function() {
         // dd(Auth::user());
